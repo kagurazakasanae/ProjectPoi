@@ -1,0 +1,38 @@
+<!-- include(header) -->
+<div class="title">
+	<h1>
+		<a href="/settings">设置</a> »
+		<a href="/settings/sites">站点 &amp; API 密钥</a> » 更换密钥
+	</h1>
+</div>
+<p>
+	如果您认为您的API密钥已经泄露，您可以在此更换密钥，系统将自动生成新的密钥，
+</p>
+<p class="notice danger">
+	所有使用旧密钥的API请求将会出错！
+</p>
+<!-- if($notice!=''): -->
+<p class="notice warn">{$notice}</p>
+<!-- endif -->
+<form action="/settings/api-revoke-keys" method="post">
+	<input type="hidden" name="nonce" value="{$nonce}"/>
+	
+	<div class="row">
+		<div class="eight columns">
+			<label>当前密码</label>
+			<input 
+				type="password"	required name="password" class="full-width"
+				autocomplete="off" value=""/>
+						<p class="hint">
+				请输入您 <strong>当前的</strong> 密码来更换密钥。
+			</p>
+		</div>	
+		<div class="four columns">
+			<label>&nbsp;</label>
+			<input
+				type="submit" class="button primary full-width"
+				value="更换密钥"/>
+		</div>
+	</div>
+</form>
+<!-- include(footer) -->

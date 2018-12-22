@@ -1,0 +1,192 @@
+<!-- include(header) -->
+<div class="section">
+	<div style="float: right; padding-top: 1.4em;">
+		<em>
+			新推出:
+			<a href="/documentation/simple-ui">简易挖矿UI</a>
+		</em>
+	</div>
+	<h1>控制台</h1>
+<!-- if($notice!=''): -->
+<p class="notice warn">{$notice}</p>
+<!-- endif -->
+	<div class="row">
+		<div class="three columns rew">
+			<h4 class="number-label">Hashes/s</h4>
+			<h2>{$speed} </h2>
+		</div>
+		<div class="three columns rew">
+			<h4 class="number-label">总计Hash</h4>
+			<h2>{$totalhash}</h2>
+		</div>
+		<div class="three columns rew">
+			<h4 class="number-label">总计支付</h4>
+			<h2>
+				{$totalpaid} 
+				<span class="unit">XMR</span>
+			</h2>
+		</div>
+		<div class="three columns rew">
+			<h4 class="number-label">等待支付</h4>
+			<h2>
+				{$pandingpay} 				<span class="unit">XMR</span>
+			</h2>
+		</div>
+	</div>
+
+	<p class="fine-print">
+		当前报酬
+		{$mhashxmr} XMR per 1M hashes<br/>
+		(挖矿难度:
+		{$diff}G,
+		区块奖励:
+		{$blockreward} XMR,
+		报酬 : {$payout}%,
+		信息更新于: {$payoutupdatetime})
+	</p>
+</div>
+
+<div class="section">
+	<h2>站点列表</h2>
+	<div class="overflow-container">
+		<table>
+			<tr>
+				<th>名称</th>
+				<th class="number-long">Hashes/s</th>
+				<th class="number-long">总计Hash</th>
+				<th class="number-long">总计XMR</th>
+			</tr>
+			<!-- if($sites): -->
+			<!-- foreach($sites as $s): -->
+							<tr>
+					<td>{$s['site_name']}</td>
+					<td class="number-long">{$s['speed']} </td>
+					<td class="number-long">{$s['hashes']}</td>
+					<td class="number-long">
+						<!-- php{echo number_format($s['hashes']*$mhashxmrraw,7);} -->						<span class="unit">XMR</span>
+					</td>
+				</tr>
+			<!-- endforeach -->
+			<!-- endif -->
+					</table>
+	</div>
+</div>
+
+	<script src="/View/Tpl/media/chartist.js"></script>
+
+	<div class="section">
+		<h2>最近7天每小时平均Hashes/s </h2>
+		<div id="chart-hashes-timeline" class="ct-chart"></div>
+		<script>
+			var script = document.createElement('script');
+script.type = 'text/javascript';
+script.src = "/View/Tpl/media/chartist.js";
+script.onload = script.onreadystatechange = function(){
+var data = {
+				labels: {$labels},
+				series: {$series}
+				};
+
+			var length = data.series[0].length;
+var maxXLabels = 6;
+var xLabelEvery = Math.ceil(length / maxXLabels);
+var xIdx = 0;
+
+var ydiv = 1;
+var ylabel = '';
+var ymax = 0;
+for (var i = 0; i < data.series.length; i++) {
+	for (var n = 0; n < data.series[i].length; n++) {
+		ymax = Math.max(ymax, data.series[i][n]);
+	}
+}
+
+if (ymax >= 10000000000) { ydiv = 1000000000; ylabel = ' G'; }
+else if (ymax >= 10000000) { ydiv = 1000000; ylabel = ' M'; }
+else if (ymax >= 10000) { ydiv = 1000; ylabel = ' K'; }
+
+var options = {
+	height: 400,
+	low: 0,
+	showPoint: false,
+	lineSmooth: true,
+	axisY: {
+		labelInterpolationFnc: function(value) {
+			return Math.round(value/ydiv) + ylabel;
+		}
+	},
+	axisX: {
+		showGrid: false,
+		showLabel: true,
+		labelInterpolationFnc: function(value) {
+			return (xIdx++ % xLabelEvery === 0) ? value : '';
+		}
+	}
+};
+new Chartist.Line('#chart-hashes-timeline', data, options);			new Chartist.Line('#chart-hashes-timeline', data, options);}
+document.getElementsByTagName('head')[0].appendChild(script);
+		</script>
+	</div>
+<div class="section">
+	<h2>支付记录</h2>
+	<div class="overflow-container">
+		<table>
+			<tr>
+				<th>日期</th>
+				<th>编号</th>
+				<th>XMR</th>
+			</tr>
+			
+			<!-- if($paylist): -->
+			<!-- foreach($paylist as $p): -->
+							<tr>
+					<td>{$p['$p['time']}</td>
+					<td class="number-long">{$p['tran_id']} </td>
+					<td class="number-long">{$p['xmr']}</td>
+				</tr>
+			<!-- endforeach -->
+			<!-- endif -->
+					</table>
+	</div>
+	<!-- if(!$paylist): -->
+			<p class="hint">暂时还没有支付记录</p>
+	<!-- endif -->
+	</div>
+	
+<form action="/dashboard/users" method="GET" class="section">
+	<div class="row">
+		<div class="six columns">
+			<h2>新用户</h2>		
+		</div>
+		<div class="three columns">
+			<input type="text" class="full-width" name="q" placeholder="用户名"/>
+		</div>
+		<div class="three columns">
+			<input class="search-button button full-width" type="submit" value="搜索">
+		</div>
+	</div>
+
+	<div class="overflow-container">
+		<table>
+			<tr>
+				<th>最后提交</th>
+				<th>站点</th>
+				<th>名称</th>
+				<th class="number-long">Hashes</th>
+			</tr>
+			<!-- if($userlist): -->
+			<!-- foreach($userlist as $u): -->
+							<tr>
+					<td>{$u['lastsubmit']}</td>
+					<td>{$u['sitename']}</td>
+					<td>{$u['username']}</td>
+					<td class="number-long">
+						{$u['hashes']}					</td>
+				</tr>
+			<!-- endforeach -->
+			<!-- endif -->
+					</table>
+	</div>
+<p class="hint">只显示最后提交最近的20个用户</p>
+	</form>
+<!-- include(footer) -->

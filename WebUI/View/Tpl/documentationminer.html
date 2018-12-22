@@ -1,0 +1,497 @@
+<!-- include(header) -->
+<div class="title">
+	<h1>
+		<a href="/documentation">文档</a> »
+		JavaScript Miner
+	</h1>
+</div>
+
+<div class="section">
+	<h2>概览</h2>
+	<p>
+		ProjectPoi JavaScript挖矿程序允许您直接将其嵌入到您的网站中。其本身没有用户界面，但是您有责任告诉用户发生了什么，并提供详细的统计信息。
+	</p>
+
+	<p>
+		如果您希望使用现成的产品，您可以使用 <a href="/documentation/simple-ui">简易挖矿UI</a>。
+	</p>
+
+	<p>
+		尽管从技术上来讲您可以在用户不知情的情况下运行挖矿，但我们强烈反对这种做法。
+	</p>
+
+	<p>
+		您可以让用户匿名进行挖掘，也可以为用户分配标识来追踪他们的进度，也可以向用户分配token并在获得指定数量hash之后停止。
+	</p>
+	<p>
+		请参阅 <a href="/documentation/http-api">HTTP API 文档</a> 了解如何获得通过您分配的用户名获得用户的 <em>余额</em>，以及如何验证token。
+	</p>
+</div>
+
+<div class="section">
+	<h2>概要</h2>
+	<p>加载 ProjectPoi 挖矿程序</p>
+<pre class="sh">
+&lt;script src="https://ppoi.org/lib/projectpoi.min.js"&gt;&lt;/script&gt;
+</pre>
+
+	<p>开始挖矿</p>
+<pre class="sh">
+&lt;script&gt;
+	var miner = new ProjectPoi.Anonymous('YOUR_SITE_KEY');
+	miner.start();
+&lt;/script&gt;
+</pre>
+
+
+	<p>可以通过监听事件来更新您网站上的统计信息等。</p>
+<pre class="sh">
+&lt;script&gt;
+	// Listen on events
+	miner.on('found', function() { /* Hash found */ })
+	miner.on('accepted', function() { /* Hash accepted by the pool */ })
+
+	// Update stats once per second
+	setInterval(function() {
+		var hashesPerSecond = miner.getHashesPerSecond();
+		var totalHashes = miner.getTotalHashes();
+		var acceptedHashes = miner.getAcceptedHashes();
+
+		// Output to HTML elements...
+	}, 1000);
+&lt;/script&gt;
+</pre>
+</div>
+
+<div class="section">
+	<h2>API 参考</h2>
+
+	<h4>构造函数</h4>
+	<ul class="reference">
+		<li><a href="#projectpoi-anonymous">ProjectPoi.Anonymous(siteKey [, options])</a></li>
+		<li><a href="#projectpoi-user">ProjectPoi.User(siteKey, userName [, options])</a></li>
+		<li><a href="#projectpoi-token">ProjectPoi.Token(siteKey, targetHashes [, options])</a></li>
+	</ul>
+
+	<h4>实例方法</h4>
+	<ul class="reference">
+		<li><a href="#miner-start">.start([mode])</a></li>
+		<li><a href="#miner-stop">.stop()</a></li>
+		<li><a href="#miner-is-running">.isRunning()</a></li>
+		<li><a href="#miner-on">.on(event, callback)</a></li>
+		<li><a href="#miner-has-wasm-support">.hasWASMSupport()</a></li>
+		<li><a href="#miner-get-num-threads">.getNumThreads()</a></li>
+		<li><a href="#miner-set-num-threads">.setNumThreads(numThreads)</a></li>
+		<li><a href="#miner-get-auto-threads-enabled">.getAutoThreadsEnabled()</a></li>
+		<li><a href="#miner-set-auto-threads-enabled">.setAutoThreadsEnabled(enabled)</a></li>
+		<li><a href="#miner-get-throttle">.getThrottle()</a></li>
+		<li><a href="#miner-set-throttle">.setThrottle(throttle)</a></li>
+		<li><a href="#miner-get-token">.getToken()</a></li>
+		<li><a href="#miner-get-hashes-per-second">.getHashesPerSecond()</a></li>
+		<li><a href="#miner-get-total-hashes">.getTotalHashes([interpolate])</a></li>
+		<li><a href="#miner-get-accepted-hashes">.getAcceptedHashes()</a></li>
+	</ul>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="projectpoi-anonymous">new ProjectPoi.Anonymous(siteKey [, options])</h3>
+	<p>
+		创建一个匿名矿工。
+	</p>
+
+	<p>
+		一般用户捐助等情形。用户将不会获得任何报酬，您也无法跟踪每一个用户获得的具体hash数。
+	</p>
+
+	<h4>参数</h4>
+	<table class="reference">
+		<tr>
+			<td>siteKey</td>
+			<td>
+				您的站点标识码。 参阅 <a href="/settings/sites">设置 » 站点与API</a>。
+			</td>
+		</tr>
+		<tr>
+			<td>options</td>
+			<td>
+				定义进一步设置的可选对象。请参阅<a href="#constructor-options">构造函数选项</a>。
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="projectpoi-user">new ProjectPoi.User(siteKey, userName [, options])</h3>
+	<p>
+		创建一个矿工并分配用户名。 您可以通过
+		<a href="/documentation/http-api#user-balance">HTTP API</a> 来追踪和操作其信息。
+	</p>
+
+	<p>
+		一般用于向用户提供游戏币等奖励。
+	</p>
+
+	<p>
+		请仅当您需要持久储存用户信息的时候才调用 <code>ProjectPoi.User</code> 方法，不要使用您不会再次查询的一次性名称。
+	</p>
+
+	<h4>参数</h4>
+	<table class="reference">
+		<tr>
+			<td>siteKey</td>
+			<td>
+				您的站点标识码。 参阅 <a href="/settings/sites">设置 » 站点与API</a>。
+			</td>
+		</tr>
+		<tr>
+			<td>userName</td>
+			<td>
+				一个独特的标识符，最多32字符，大小写敏感。
+			</td>
+		</tr>
+		<tr>
+			<td>options</td>
+			<td>
+				定义进一步设置的可选对象。请参阅<a href="#constructor-options">构造函数选项</a>。
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="projectpoi-token">new ProjectPoi.Token(siteKey, targetHashes [, options])</h3>
+	<p>
+		创建一个新的矿工并设定期望达到的hash数量
+		(<code>targetHashes</code>)。 Tokens 可以通过我们的
+		<a href="/documentation/http-api#token-verify">HTTP API</a>来验证。 Token将会在一小时之后过期。
+	</p>
+	<p>
+		该token由我们的服务器随机创建，在用户通过验证之后您可以调用 <a href="#miner-get-token">miner.getToken()</a> 方法来获取该token。
+	</p>
+	<p>
+		一般用于一次性的工作量证明，以便限制用户访问您的特定资源的频率，比如ProjectPoi的验证码等。
+	</p>
+
+	<h4>参数</h4>
+	<table class="reference">
+		<tr>
+			<td>siteKey</td>
+			<td>
+				您的站点标识码。 参阅 <a href="/settings/sites">设置 » 站点与API</a>。
+			</td>
+		</tr>
+		<tr>
+			<td>targetHashes</td>
+			<td>
+				您期望用户获得的hash数量。由于我们使用的矿池难度为256，所以该数量需要为256的倍数。最小值为256.
+			</td>
+		</tr>
+		<tr>
+			<td>options</td>
+			<td>
+				定义进一步设置的可选对象。请参阅<a href="#constructor-options">构造函数选项</a>。
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="constructor-options">构造函数选项</h3>
+	<p>
+		当使用 <code>ProjectPoi.User</code>,
+		<code>ProjectPoi.Token</code> 和 <code>ProjectPoi.Anonymous</code>
+		方法时构造函数是可选的，如果您希望使用构造函数，您需要提供以下属性。
+	</p>
+
+	<table class="reference">
+		<tr>
+			<td>threads</td>
+			<td>
+				挖矿将使用的线程数，默认值为 <code>navigator.hardwareConcurrency</code> ，也就是用户计算机可使用的CPU内核数。
+			</td>
+		</tr>
+		<tr>
+			<td>autoThreads</td>
+			<td>
+				是否应当自动调整线程数来获得最佳性能。这是一个试验中的功能，默认值为 <code>false</code>.
+			</td>
+		</tr>
+		<tr>
+			<td>throttle</td>
+			<td>
+				为用户保留多少资源空闲，详细请参阅
+				<a href="#miner-set-throttle">miner.setThrottle()</a> 默认值为 <code>0</code>.
+			</td>
+		</tr>
+		<tr>
+			<td>forceASMJS</td>
+			<td>
+				如果为 <code>true</code>, 程序将使用
+				<a href="http://asmjs.org/" target="_blank">asm.js</a> 来实现算法。 如果为 <code>false</code> ，程序将会使用更快的<a href="http://webassembly.org/" target="_blank">WebAssembly</a>
+				来实现，当不支持时将会用回 asm.js 。
+				默认值为 <code>false</code>.
+			</td>
+		</tr>
+	</table>
+
+	<h4>完整示范，使用 <code>ProjectPoi.User</code> 方法:</h4>
+<pre class="sh">
+var miner = new ProjectPoi.User('YOUR_SITE_KEY', 'john-doe', {
+	threads: 4,
+	autoThreads: false,
+	throttle: 0.8,
+	forceASMJS: false
+});
+</pre>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-start">.start( [mode] )</h3>
+	<p>
+		连接到矿池并开始挖掘。 选项 <code>mode</code>
+		将会决定矿机该如何处理其他标签页上的矿机。默认值为
+		<code>ProjectPoi.IF_EXCLUSIVE_TAB</code>.
+	</p>
+	<p>
+		注意 <code>mode</code> 只能影响同一个域名下的矿机，您不能对其他域名上运行的矿机进行操作。
+	</p>
+
+	<h4>模式</h4>
+	<table class="reference">
+		<tr>
+			<td>ProjectPoi.IF_EXCLUSIVE_TAB</td>
+			<td>
+				矿工只有在没有其他标签已经开采的情况下才会启动。如果其他选项卡上都没有挖矿在运行，本进程才会启动。
+			</td>
+		</tr>
+		<tr>
+			<td>ProjectPoi.FORCE_EXCLUSIVE_TAB</td>
+			<td>
+				挖矿程序将立刻启动并结束其他标签页上的未指定
+				<code>ProjectPoi.FORCE_MULTI_TAB</code> 模式的程序。
+			</td>
+		</tr>
+		<tr>
+			<td>ProjectPoi.FORCE_MULTI_TAB</td>
+			<td>
+				挖矿程序将永远存在且不被结束，验证码就属于这种模式。
+			</td>
+		</tr>
+	</table>
+
+	<h4>例子</h4>
+<pre class="sh">
+miner.start(ProjectPoi.IF_EXCLUSIVE_TAB);
+</pre>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-stop">.stop( )</h3>
+	<p>
+		断开与矿池的连接并停止。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-is-running">.isRunning( )</h3>
+	<p>
+		返回 <code>true|false</code> 来表示是否与矿池建立了连接且是否在工作。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-on">.on(event, callback(params) { })</h3>
+	<p>
+		为事件指定回调。
+	</p>
+
+	<h4>参数</h4>
+	<table class="reference">
+		<tr>
+			<td>event</td>
+			<td>
+				想要监听的事件名。
+			</td>
+		</tr>
+		<tr>
+			<td>callback(params){}</td>
+			<td>
+				触发回调时的参数。
+			</td>
+		</tr>
+	</table>
+
+	<h4>Event Types</h4>
+	<table class="reference">
+		<tr id="event-open">
+			<td>open</td>
+			<td>
+				成功建立与矿池的连接。 通常在调用 <a href="#miner-start">miner.start()</a> 结束后不久触发。
+			</td>
+		</tr>
+		<tr id="event-authed">
+			<td>authed</td>
+			<td>
+				矿池接受了用户，
+				<code>siteKey</code> 已经被服务器接受。一般在
+				<code>open</code> 刚刚结束后触发。在使用
+				<code>ProjectPoi.Token</code> 的情况，用户将会获得token。
+			</td>
+		</tr>
+		<tr id="event-close">
+			<td>close</td>
+			<td>
+				与矿池的连接被关闭。一般发生在
+				<a href="#miner-stop">miner.stop()</a> 被调用或者
+				<code>ProjectPoi.Token</code> 设定的目标达到。
+			</td>
+		</tr>
+		<tr id="event-error">
+			<td>error</td>
+			<td>
+				发生了错误，程序将尝试重连到矿池。
+			</td>
+		</tr>
+		<tr id="event-job">
+			<td>job</td>
+			<td>
+				从矿池中获得了新的任务。
+			</td>
+		</tr>
+		<tr id="event-found">
+			<td>found</td>
+			<td>
+				一个新的计算结果被发送给矿池。
+			</td>
+		</tr>
+		<tr id="event-accepted">
+			<td>accepted</td>
+			<td>
+				矿池接受了计算结果。
+			</td>
+		</tr>
+	</table>
+
+	<h4>例子</h4>
+<pre class="sh">
+miner.on('authed', function(params) {
+	console.log('Token name is: ', miner.getToken());
+});
+
+miner.on('error', function(params) {
+	if (params.error !== 'connection_error') {
+		console.log('The pool reported an error', params.error);
+	}
+});
+</pre>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-has-wasm-support">.hasWASMSupport( )</h3>
+	<p>
+		返回 <code>true|false</code> 来表示浏览器是否支持WebAssembly。如果不支持的话将采用较慢的asm.js来完成算法。您应当考虑提醒用户更新浏览器。
+	</p>
+	<p>
+		<a href="http://caniuse.com/#search=wasm" target="_blank">
+			目前支持WASM的浏览器列表
+		</a>
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-get-num-threads">.getNumThreads( )</h3>
+	<p>
+		返回目前设置的线程数。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-set-num-threads">.setNumThreads(numThreads)</h3>
+	<p>
+		设定挖矿使用的线程数。 最少: <code>1</code> 。一般来讲哪怕您的用户用的全是8路E7，您也不应该设定超过8或者16个线程。
+	</p>
+	<p>
+		另请参阅 
+		<a href="#constructor-options">构造函数</a> 中的 <code>threads</code> 属性。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-get-auto-threads-enabled">.getAutoThreadsEnabled( )</h3>
+	<p>
+		返回 <code>true|false</code> 表示autoThreads当前是否启用。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-set-auto-threads-enabled">.setAutoThreadsEnabled(enabled)</h3>
+	<p>
+		启用或禁用自动调整线程数以获得最佳性能。这个功能是实验性的。
+	</p>
+	<p>
+		另请参阅 <a href="#constructor-options">构造函数</a> 中的 <code>autoThreads</code> 属性。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-get-throttle">.getThrottle( )</h3>
+	<p>
+		返回当前资源限制值。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-set-throttle">.setThrottle(throttle)</h3>
+	<p>
+		设置线程应保持空闲的时间百分比。 设定为
+		<code>0</code> 表示没有空闲 (也就是全速)，设定为
+		<code>0.5</code> 表示有50%的时间为空闲，
+		设定为 <code>0.8</code> 就是80%空闲。
+	</p>
+	<p>
+		另请参阅 <a href="#constructor-options">构造函数</a> 中的 <code>throttle</code> 属性。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-get-token">.getToken( )</h3>
+	<p>
+		如果实例使用的是 <code>ProjectPoi.Token</code> 方法创建，则返回从服务器中获得的token的值 (<code>字符串</code>) 该值将一直为空直到服务器接受了本客户端。 您应当使用 <a href="#miner-on">authed</a> 事件的回调来获得此值。
+	</p>
+	<h4>例子</h4>
+<pre class="sh">
+miner.on('authed', function(params) {
+	console.log('Token name is: ', miner.getToken());
+});
+</pre>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-get-hashes-per-second">.getHashesPerSecond( )</h3>
+	<p>
+		返回当前的速度(Hash/s)，本值每个线程每秒更新一次。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-get-total-hashes">.getTotalHashes([interpolate])</h3>
+	<p>
+		返回此矿工解决的Hash总数。请注意，此数字通常每秒更新一次。
+	<p>
+		如果 <code>interpolate</code> 设定为true，则该值将会每毫秒更新一次。如果想要向用户展示快速增加的数字该选项则非常有用，比如
+		<a href="/">ProjectPoi的首页</a>。
+	</p>
+</div>
+
+<div class="section">
+	<h3 class="sh" id="miner-get-accepted-hashes">.getAcceptedHashes( )</h3>
+	<p>
+		返回矿池接受的hash数，
+		参阅 <a href="#miner-on">accepted 事件</a>.
+	</p>
+	<p>
+		对于 <code>ProjectPoi.User</code> 创建的矿工来说，该值包括该用户 <em>历史上获得的</em> hash总数。
+	</p>
+</div>
+
+<!-- include(footer) -->

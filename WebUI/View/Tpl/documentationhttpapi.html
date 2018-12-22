@@ -1,0 +1,399 @@
+<!-- include(header) -->
+<div class="title">
+	<h1>
+		<a href="/documentation">文档</a> »
+		HTTP API
+	</h1>
+</div>
+
+<div class="section">
+	<h2>概览</h2>
+	<p>
+		使用 ProjectPoi HTTP API 您可以获取token/用户所获得的hash、获得当前报酬信息等。
+	</p>
+	<p>
+		使用这些API需要您的 <em>API key</em> (具体参见
+		<a href="/settings/sites">设置 » 站点与API</a>)。
+	</p>
+	<p>
+		您应当
+		<strong>永不</strong> 从客户端中直接发起请求。
+	</p>
+	<p>
+		您的 <em>API key</em> 可以通过
+		<code>GET</code> 或者 <code>POST</code> 模式传输， 具体取决于您所使用的API接口。
+	</p>
+	<p>
+		API的返回均为JSON格式。
+	</p>
+</div>
+
+<div class="section">
+	<h2 id="global-errors">一般错误</h2>
+	<p>
+		任何一个API接口都可能返回以下错误
+	</p>
+
+	<table class="reference">
+		<tr>
+			<td>invalid_secret</td>
+			<td>
+				所提供的 <code>API key</code> 无效
+			</td>
+		</tr>
+		<tr>
+			<td>bad_request</td>
+			<td>
+				服务器无法理解您的请求
+			</td>
+		</tr>
+		<tr>
+			<td>wrong_method</td>
+			<td>
+				请求接口所用的方式错误
+			</td>
+		</tr>
+		<tr>
+			<td>not_found</td>
+			<td>
+				找不到您请求的接口
+			</td>
+		</tr>
+		<tr>
+			<td>internal_error</td>
+			<td>
+				服务器遇到了一些未知问题
+				<a href="/info/faq">联系我们</a>来报告这些问题。
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="section" id="reference">
+	<h2>目录</h2>
+
+	<h4>Tokens</h4>
+	<ul class="reference">
+		<li><a href="#token-verify">/token/verify</a></li>
+	</ul>
+
+	<h4>用户</h4>
+	<ul class="reference">
+		<li><a href="#user-balance">/user/balance</a></li>
+		<li><a href="#user-withdraw">/user/withdraw</a></li>
+	</ul>
+
+
+	<h4>统计</h4>
+	<ul class="reference">
+		<li><a href="#stats-payout">/stats/payout</a></li>
+		<li><a href="#stats-site">/stats/site</a></li>
+	</ul>
+</div>
+
+<div class="section">
+	<h3 id="token-verify">/token/verify</h3>
+	<h4>URL: <code>https://api.ppoi.org/token/verify</code></h4>
+	<h4>请求方法: <code>POST</code></h4>
+	<p>
+		验证来自方法
+		<a href="/documentation/miner#projectpoi-token">ProjectPoi.Token</a> 的返回。Token仅在1小时内有效且只能被成功验证一次。当Token无效或已被验证时会返回 <code>invalid_token</code> 错误。
+	</p>
+	<h4>参数</h4>
+	<table class="reference">
+		<tr>
+			<td>secret</td>
+			<td>
+				您的API key。 参见
+				<a href="/settings/sites">设置 » 站点与API</a>.
+			</td>
+		</tr>
+		<tr>
+			<td>token</td>
+			<td>
+				您要验证的token，该参数可以直接由
+				<a href="/documentation/miner#get-token">miner.getToken()</a> 函数获得。
+				对于 <a href="/documentation/captcha">验证码</a>， 该token会直接在表单的
+				<code>projectpoi-captcha-token</code> 参数中传递给服务端。
+			</td>
+		</tr>
+		<tr>
+			<td>hashes</td>
+			<td>
+				该token已获得的hash数量
+			</td>
+		</tr>
+	</table>
+
+	<h4>响应</h4>
+<pre class="sh">
+{
+	"success": true|false, 	// token是否有效
+	"hashes": number, 		// token目前的hash数
+	"created": number, 		// token生成时间戳
+	"error": string 		// 错误信息，可能为空
+}
+</pre>
+
+	<h4>可能出现的错误</h4>
+	<table class="reference">
+		<tr>
+			<td>missing_input</td>
+			<td>
+				POST请求中缺少 <code>token</code> or <code>hashes</code> 参数。
+			</td>
+		</tr>
+		<tr>
+			<td>invalid_token</td>
+			<td>
+				请求的token已被使用或者不存在或者没有达到您设定的hash数。
+			</td>
+		</tr>
+	</table>
+
+	<p>
+		同时，任何一种<a href="#global-errors">一般错误</a>都可能会出现。
+	</p>
+
+	<h4>例子</h4>
+<pre class="sh">
+curl -X POST \
+	-d "token=FINGv1AhbP4aOBsAJU0Wos2p" \
+	-d "hashes=1024" \
+	-d "secret=&lt;api-key&gt;" \
+	"https://api.ppoi.org/token/verify"
+
+# {"success": true, "created": 1504205981, "hashes": 1024}
+</pre>
+</div>
+
+<div class="section">
+	<h3 id="user-balance">/user/balance</h3>
+	<h4>URL: <code>https://api.ppoi.org/user/balance</code></h4>
+	<h4>请求方法: <code>GET</code></h4>
+	<p>
+		获得指定用户已获得的hash数 <a href="#user-withdraw">/user/withdraw</a>.
+	</p>
+	<h4>参数</h4>
+	<table class="reference">
+		<tr>
+			<td>secret</td>
+			<td>
+				您的API key。 参见<a href="/settings/sites">设置 » 站点与API</a>.
+			</td>
+		</tr>
+		<tr>
+			<td>name</td>
+			<td>
+				您在
+				<a href="/documentation/miner#projectpoi-user">ProjectPoi.User</a>
+				方法中为用户指定的用户名
+			</td>
+		</tr>
+		<tr>
+			<td>sitekey</td>
+			<td>
+				该用户所属站点的标识码
+			</td>
+		</tr>
+	</table>
+
+	<h4>响应</h4>
+<pre class="sh">
+{
+	"success": true|false, 	// 成功与否
+	"name": string, 		// 用户名
+	"total": number, 		// 获得的hash总数
+	"lastsubmit": number, 	// 上次提交时间
+	"error": string 		// 错误信息，可能为空
+}
+</pre>
+
+	<h4>可能出现的错误</h4>
+	<table class="reference">
+		<tr>
+			<td>missing_input</td>
+			<td>缺少参数</td>
+		</tr>
+		<tr>
+			<td>unknown_user</td>
+			<td>
+				找不到用户
+			</td>
+		</tr>
+	</table>
+
+	<p>
+		同时，任何一种<a href="#global-errors">一般错误</a>都可能会出现。
+	</p>
+
+	<h4>例子</h4>
+<pre class="sh">
+curl "https://api.ppoi.org/user/balance?name=johnd&amp;secret=&lt;secret-key&gt;"
+
+# {success: true, name: "gebilaowang", total: 4096, lastsubmit: 1506913061, error: ""}
+</pre>
+</div>
+
+<div class="section">
+	<h3 id="user-withdraw">/user/withdraw</h3>
+	<h4>URL: <code>https://api.ppoi.org/user/withdraw</code></h4>
+	<h4>请求方法: <code>POST</code></h4>
+	<p>
+		从指定用户的余额中扣除一定数额。
+	</p>
+	<h4>参数</h4>
+	<table class="reference">
+		<tr>
+			<td>secret</td>
+			<td>
+				您的API key。 参见<a href="/settings/sites">设置 » 站点与API</a>.
+			</td>
+		</tr>
+		<tr>
+			<td>name</td>
+			<td>
+				您在
+				<a href="/documentation/miner#projectpoi-user">ProjectPoi.User</a>
+				方法中为用户指定的用户名
+			</td>
+		</tr>
+		<tr>
+			<td>sitekey</td>
+			<td>
+				该用户所属站点的标识码
+			</td>
+		</tr>
+		<tr>
+			<td>amount</td>
+			<td>
+				要扣除的数量。
+			</td>
+		</tr>
+	</table>
+
+	<h4>响应</h4>
+<pre class="sh">
+{
+	"success": true|false, 	// 成功与否
+	"name": string, 		// 用户名
+	"amount": number, 		// 扣除的数量
+	"error": string 		// 错误信息，可能为空
+}
+</pre>
+
+	<h4>可能出现的错误</h4>
+	<table class="reference">
+		<tr>
+			<td>missing_input</td>
+			<td>
+				缺少参数
+			</td>
+		</tr>
+		<tr>
+			<td>unknown_user</td>
+			<td>
+				找不到用户
+			</td>
+		</tr>
+		<tr>
+			<td>invalid_amount</td>
+			<td>
+				数值不合法。
+			</td>
+		</tr>
+		<tr>
+			<td>insufficent_funds</td>
+			<td>
+				余额不足
+			</td>
+		</tr>
+	</table>
+
+	<p>
+		同时，任何一种<a href="#global-errors">一般错误</a>都可能会出现。
+	</p>
+
+	<h4>例子</h4>
+<pre class="sh">
+curl -X POST \
+	-d "name=johnd" \
+	-d "amount=4096" \
+	-d "secret=&lt;api-key&gt;" \
+	"https://api.ppoi.org/user/withdraw"
+
+# {"success": true, "name": "gebilaowang", "amount": 4096}
+</pre>
+</div>
+
+
+<div class="section">
+	<h3 id="stats-payout">/stats/payout</h3>
+	<h4>URL: <code>https://api.ppoi.org/stats/payout</code></h4>
+	<h4>请求方法: <code>GET</code></h4>
+	<p>
+		获得目前XMR的难度信息等。
+	</p>
+	<h4>参数</h4>
+	<p>
+		无需参数。
+	</p>
+
+	<h4>响应</h4>
+<pre class="sh">
+{
+	"success": true|false,
+	"diff": number,
+	"block_reward": number,
+	"payout": number,
+	"last_update": number,
+	"error": string // 错误信息，可能为空
+}
+</pre>
+
+	<h4>可能出现的错误</h4>
+	<p>
+		任何一种<a href="#global-errors">一般错误</a>都可能会出现。
+	</p>
+</div>
+
+
+
+<div class="section">
+	<h3 id="stats-site">/stats/site</h3>
+	<h4>URL: <code>https://api.ppoi.org/stats/site</code></h4>
+	<h4>请求方法: <code>GET</code></h4>
+	<p>
+		获得您的站点的统计信息
+	</p>
+	<h4>参数</h4>
+	<table class="reference">
+		<tr>
+			<td>secret</td>
+			<td>
+				您的API key。 参见<a href="/settings/sites">设置 » 站点与API</a>.
+			</td>
+		</tr>
+	</table>
+
+	<h4>响应</h4>
+<pre class="sh">
+{
+	"success": true|false,
+	"sitedata": [
+		{
+			"hashes": number, // 该站点的总hash数
+			"speed": number	//速度
+		},
+		&hellip;
+	],
+	"error": string // 错误信息，可能为空
+}
+</pre>
+
+	<h4>可能出现的错误</h4>
+	<p>
+		同时，任何一种<a href="#global-errors">一般错误</a>都可能会出现。
+	</p>
+</div>
+<!-- include(footer) -->

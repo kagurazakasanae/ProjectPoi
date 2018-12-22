@@ -1,0 +1,73 @@
+<!-- include(header) -->
+<div class="title">
+	<h1>
+		<a href="/settings">设置</a> »
+		站点 &amp; API 密钥
+	</h1>
+</div>
+<!-- if($notice!=''): -->
+<p class="notice warn">{$notice}</p>
+<!-- endif -->
+
+<p class="help">
+	如果您希望将您的不同站点区分统计的话，您可以在本页面添加新的站点。
+</p>
+
+<p class="help">
+ <em>站点标识码</em> 将用于您的JavaScript中并暴露给所有网站的访客。<em>API密钥</em> 则可以用来获取用户/Token所获得的hash，查询您的账户信息等。所以它应当被妥善保管而不是暴露给网站的访客。
+</p>
+
+<p class="help">
+	如果您认为您的API密钥已经泄露，您可以选择更换密钥，旧密钥将自动失效。
+</p>
+<div class="row">
+				<div class="three columns">
+					<label>API密钥</label>
+				</div>
+				<div class="nine columns">
+					<p>
+						<code>{$apikey}</code>
+						<a href="/settings/api-revoke-keys">
+							(更换密钥)
+						</a>
+					</p>
+				</div>
+			</div>
+<!-- if($sites): -->
+<form action="/settings/sites" method="post">
+	<input type="hidden" name="nonce" value="{$nonce}"/>
+	
+	<!-- foreach($sites as $s): -->
+			<div class="form-set">
+			<div class="row">
+				<div class="three columns">
+					<label>名称</label>
+				</div>
+				<div class="nine columns">
+					<input 
+						type="text" class="full-width"
+						name="sites[sid_{$s['sid']}]"
+						placeholder="标识名称 (比如: 我的网站)"
+						value="{$s['site_name']}">
+				</div>
+			</div>
+			<div class="row">
+				<div class="three columns">
+					<label>站点标识码</label>
+				</div>
+				<div class="nine columns">
+					<p><code>{$s['site_key']}</code></p>
+				</div>
+			</div>
+			
+		</div>
+<!-- endforeach -->
+		<div>
+		<input type="submit" class="button primary" value="保存站点名称"/>
+	</div>
+</form>
+<!-- endif -->
+<!-- if($allownewsite): -->
+<p><a href="/settings/sites-new">添加新站点</a></p>
+<!-- endif -->
+<!-- include(footer) -->

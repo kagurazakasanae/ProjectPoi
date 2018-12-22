@@ -1,0 +1,46 @@
+<!-- if(!isset($_GET['_pjax'])): -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>
+					{$thistitle} – 
+				{$name} – {$description}
+	</title>
+	<meta name="description" content="Monero JavaScript Miner">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="/View/Tpl/media/styles.css">
+	<link rel="icon" type="image/png" href="/View/Tpl/media/icon.png">
+	<link href="/View/Tpl/media/Material.css" rel="stylesheet">
+	<script type="text/javascript" src="/View/Tpl/media/j.js" async></script>
+	<link rel="apple-touch-icon" href="/View/Tpl/media/icon.png">
+	<script type="text/javascript" src="/View/Tpl/media/syntax-highlight.js" async></script>
+</head>
+<body>
+
+<div class="navigation">
+	<div class="up">
+		<a <!-- if($thismodule == ''): --><!-- endif -->	href="/">
+			<img src="/View/Tpl/media/icon.png" class="navigation-icon"/>
+		</a>
+		
+				<a <!-- if($thismodule == 'dashboard'): --><!-- endif --> href="/dashboard"><i class="material-icons">&#xE871;</i></a>
+	<a <!-- if($thismodule == 'documentation'): --><!-- endif --> href="/documentation"><i class="material-icons">&#xE86E;</i></a>
+		
+	</div>
+		<div class="down">
+		<!-- if($logined): -->
+			<a <!-- if($thismodule == 'settings'): --><!-- endif --> href="/settings"><i class="material-icons">&#xE8B8;</i></a>
+			<a class="logout-button" href="/account/logout?nonce={$nonce}"><i class="material-icons">&#xE879;</i></a>
+		<!-- else -->
+			<a <!-- if($thismodule == 'login'): --><!-- endif --> href="/account/login"><i class="material-icons">&#xE853;</i></a>
+			<a <!-- if($thismodule == 'signup'): --><!-- endif --> href="/account/signup"><i class="material-icons">&#xE254;</i></a>
+		<!-- endif -->
+		</div>
+</div>
+
+<div class="main">
+	<!-- endif -->
+		<script>document.title="{$thistitle} – {$name} – {$description}";</script>
+	

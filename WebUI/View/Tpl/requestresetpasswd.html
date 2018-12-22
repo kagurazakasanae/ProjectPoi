@@ -1,0 +1,41 @@
+<!-- include(header) -->
+<div class="header">
+	<h1>找回密码</h1>
+</div>
+
+<p>
+	如果您忘记了密码，您可以在此请求重设您的密码。
+</p>
+
+<form action="/account/request-password-reset" method="post" class="loginform">
+	<div class="row">
+		<div class="six columns">
+			<label>邮箱</label>
+						<input type="text" name="email" class="full-width" value=""/><br/>
+		</div>
+	</div>
+	<div class="row">
+		<label>&nbsp;</label>
+				<script
+			type="text/javascript" async defer 
+			src="/lib/captcha.min.js"></script>
+		<div 
+			class="projectpoi-captcha" 
+			data-hashes="512"
+			data-key="DIW7ccg1Kvpylc0ZhLVfQAGi"
+			data-disable-elements="input[type=submit]"
+		><em>加载验证码...<br/>如果无法加载，请禁用adblock!</em></div>
+	</div>
+	<div class="row">
+		<div class="six columns">
+			<label>&nbsp;</label>
+			<input type="submit" class="button primary" value="请求找回密码" disabled/>
+		</div>
+	</div>
+</form>
+
+<p>
+	<a href="/account/login">« 返回登录</a>
+</p>
+
+<!-- include(footer) -->

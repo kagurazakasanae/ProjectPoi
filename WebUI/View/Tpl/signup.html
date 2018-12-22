@@ -1,0 +1,49 @@
+<!-- include(header) -->
+<div class="header">
+	<h1>注册</h1>
+</div>
+<!-- if($notice!=''): -->
+<p class="notice warn">{$notice}</p>
+<!-- endif -->
+<form action="/account/signup" method="post" class="loginform">	
+	<div class="row form-row">
+		<div class="twelve columns">
+			<label>邮箱</label>
+			<input 
+				type="email" required
+				name="email" class="wide" 
+				value=""/>
+									<p class="hint">
+				将会向此地址发送一封确认邮件。
+			</p>
+		</div>
+	</div>
+	<div class="row form-row">
+		<div class="twelve columns">
+			<label>密码</label>
+			<input 
+				type="password" pattern=".{8,}" required
+				name="password" class="wide"/>
+						<p class="hint">最少8位字符</p>
+		</div>
+	</div>
+	<div class="row form-row">
+		<label>&nbsp;</label>
+				<script
+			type="text/javascript" async defer 
+			src="/lib/captcha.min.js"></script>
+		<div 
+			class="projectpoi-captcha" 
+			data-hashes="512"
+			data-key="DIW7ccg1Kvpylc0ZhLVfQAGi"
+			data-disable-elements="input[type=submit]"
+		><em>加载验证码...<br/>如果无法加载，请禁用adblock!</em></div>
+	</div>
+	<div class="row form-row">
+		<div class="four columns">
+			<label>&nbsp;</label>
+			<input type="submit" class="button primary" value="注册" disabled/>
+		</div>
+	</div>
+</form>
+<!-- include(footer) -->

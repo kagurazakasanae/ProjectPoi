@@ -1,0 +1,42 @@
+<!-- include(header) -->
+<div class="header">
+	<h1>
+		<a href="/dashboard">控制台</a>
+		» 用户 » {$searchword}*
+	</h1>
+</div>
+
+<form action="/dashboard/users" method="GET" class="section">
+	<div class="row">
+		<div class="six columns">
+			<h2>&nbsp;</h2>		
+		</div>
+		<div class="three columns">
+			<input type="text" class="full-width" name="q" value="{$searchword}"/>
+		</div>
+		<div class="three columns">
+			<input class="search-button button primary full-width" type="submit" value="搜素">
+		</div>
+	</div>
+
+	<table>
+		<tr>
+			<th>日期</th>
+			<th>站点</th>
+			<th>用户名</th>
+			<th class="number-long">Hashes</th>
+		</tr>
+		<!-- if($userlist): -->
+		<!-- foreach($userlist as $s): -->
+					<tr>
+				<td>{$s['lastsubmit']}</td>
+				<td>{$s['sitename']}</td>
+				<td>{$s['username']}</td>
+				<td class="number-long">
+					{$s['hashes']}				</td>
+			</tr>
+		<!-- endforeach -->
+		<!-- endif -->			</table>
+</form>
+
+<!-- include(footer) -->

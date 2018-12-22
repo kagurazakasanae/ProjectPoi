@@ -1,0 +1,31 @@
+<!-- include(header) -->
+<div class="header">
+	<h1>重设密码</h1>
+</div>
+
+<h2>账户: {$email}</h2>
+
+<form action="/account/reset-password" method="post">
+	<input type="hidden" name="token" value="{$token}"/>
+	
+	<div class="row">
+		<div class="six columns">
+			<label>新密码</label>
+			<input 
+				type="password" name="password" pattern=".{8,}" required 
+				class="full-width" value=""/>
+						<p class="hint">最少8位字符</p>
+		</div>
+		<div class="six columns"></div>
+	</div>
+
+	<div class="row">
+		<input type="submit" class="button primary" value="设定密码"/>
+	</div>
+</form>
+
+<p>
+	<a href="/account/login">« 返回登录</a>
+</p>
+
+<!-- include(footer) -->

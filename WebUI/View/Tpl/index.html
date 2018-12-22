@@ -1,0 +1,320 @@
+<!-- include(header) -->
+	<div class="row">
+	<div class="six columns claim">
+		<img src="/View/Tpl/media/icon.png" class="logo"/>
+		<h2>
+			在您网站上的<br>挖矿程序
+		</h2>
+	</div>
+
+	<div class="six columns stopped" id="miner">
+		<div class="row">
+			<div class="four columns">
+				<h4 class="number-label">Hashes/s</h4>
+				<h2 id="mining-hashes-per-second">0.0</h2>
+			</div>
+			<div class="four columns">
+				<h4 class="number-label">总计</h4>
+				<h2 id="mining-hashes-total">0</h2>
+			</div>
+			<div class="four columns">
+				<h4 class="number-label">线程</h4>
+				<h2>
+					<span id="mining-threads">2</span>
+					<span id="mining-threads-add" class="action">+</span>
+					<span class="mining-divide"> / </span>
+					<span id="mining-threads-remove" class="action">−</span>
+				</h2>
+			</div>
+		</div>
+		<div id="mining-stats-container">
+			<canvas id="mining-stats-canvas"></canvas>
+			<div id="mining-controls">
+				<a href="#" class="mining-button" id="mining-start">
+					<svg class="mining-icon play-button" viewBox="0 0 200 200" alt="Start Mining">
+						<circle cx="100" cy="100" r="90" fill="none" stroke-width="15" class="mining-stroke"/>
+						<polygon points="70, 55 70, 145 145, 100" class="mining-fill"></polygon>
+					</svg>
+					开始挖矿
+				</a>
+				<a href="#" class="mining-button" id="mining-stop">
+					<svg class="mining-icon pause-button" viewBox="0 0 200 200" alt="Pause">
+						<circle cx="100" cy="100" r="90" fill="none" stroke-width="15" class="mining-stroke"/>
+						<rect x="70" y="50" width="20" height="100" class="mining-fill"/>
+						<rect x="110" y="50" width="20" height="100" class="mining-fill"/>
+					</svg>
+				</a>
+			</div>
+			<div id="blk-warning" class="blk-warn" style="display: none">
+				无法加载库。<br/><strong>请禁用adblock插件!</strong>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="/lib/projectpoi.min.js"></script>
+<script type="text/javascript" src="/View/Tpl/media/miner-ui.js"></script>
+<script type="text/javascript">
+	var miner = null;
+	try {
+		miner = new ProjectPoi.Anonymous('DIW7ccg1Kvpylc0ZhLVfQAGi', {threads: 2});
+	} catch(e) {}
+
+	var ui = new MinerUI(miner, {
+		container: document.getElementById('miner'),
+		canvas: document.getElementById('mining-stats-canvas'),
+		hashesPerSecond: document.getElementById('mining-hashes-per-second'),
+		hashesPerSecond: document.getElementById('mining-hashes-per-second'),
+		threads: document.getElementById('mining-threads'),
+		threadsAdd: document.getElementById('mining-threads-add'),
+		threadsRemove: document.getElementById('mining-threads-remove'),
+		hashesTotal: document.getElementById('mining-hashes-total'),
+		startButton: document.getElementById('mining-start'),
+		stopButton: document.getElementById('mining-stop'),
+		blkWarn: document.getElementById('blk-warning')
+	});
+</script>
+
+<h3 class="call-to-action">
+	用您访客的计算资源为您带来收益
+</h3>
+
+<p class="call-to-action">
+	<a class="button primary" href="/account/signup">
+		立即体验
+	</a>
+</p>
+
+<div class="use-cases">
+	<div class="row">
+		<div class="one columns">
+			&nbsp;
+		</div>
+		<div class="five columns">
+			<h2>
+				<img class="head-icon" src="/View/Tpl/media/icons/block.png" alt=""/>
+				阻止垃圾信息
+			</h2>
+			<p>
+				阻止自动化脚本发布垃圾信息
+			</p>
+		</div>
+		<div class="five columns">
+			<h2>
+				<img class="head-icon" src="/View/Tpl/media/icons/link.png" alt=""/>
+				短链接
+			</h2>
+			<p>
+				通过使用短链接来获利
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="one columns">
+			&nbsp;
+		</div>
+		<div class="five columns">
+			<h2>
+				<img class="head-icon" src="/View/Tpl/media/icons/diamond.png" alt=""/>
+				游戏内货币
+			</h2>
+			<p>
+				在您的游戏内为玩家提供奖励
+			</p>
+		</div>
+		<div class="five columns">
+			<h2>
+				<img class="head-icon" src="/View/Tpl/media/icons/no-comm.png" alt=""/>
+				无广告
+			</h2>
+			<p>
+				让您的网站不需要广告来获利
+			</p>
+		</div>
+	</div>
+</div>
+
+<div class="section">
+<p>
+	ProjectPoi 提供基于JavaScript的门罗币挖矿程序
+	(<a href="#hash-rate">为什么选择门罗币?</a>), 您可以将其嵌入到您的站点内.
+	用户可以直接在浏览器中执行挖矿任务，从而获得无广告的浏览体验、游戏内的收益，以及任何您能想到的鼓励措施。
+</p>
+
+<ul>
+	<li>提供在线视频</li>
+	<li>提供文件下载</li>
+	<li>允许用户获得无广告的浏览体验</li>
+	<li>向玩家提供游戏内物品</li>
+</ul>
+
+<p>
+	我们提供完善的API以便您灵活决定应该给予的奖励, 具体参阅 <a href="#use-case">使用例子</a>
+</p>
+
+<p>
+	我们同时也提供验证码类服务，不过尽管我们也为其提供技术支持，仍建议只将其作为范例使用。
+</p>
+
+<p>
+	我们很高兴您选择我们的服务。我们希望它能够成为各种网站除了广告之外的新的获利方式。
+</p>
+
+<p>
+	您的用户将能够在不泄露隐私、不注册各种账户、或者安装任何程序以及不被各种广告骚扰的情况下为您带来收益。他们只需要付出一点CPU的计算资源。
+</p>
+
+<p class="call-to-action">
+	<a class="button primary" href="/account/signup">
+		立即体验
+	</a>
+</p>
+</div>
+<div class="section">
+	<h2 id="further-reading">扩展阅读</h2>
+
+	<ul>
+		<li><a href="#captcha">验证码</a></li>
+		<li><a href="#javascript-api">灵活的JavaScript API</a></li>
+		<li><a href="#hash-rate">为什么选择门罗币?</a></li>
+		<li><a href="#my-site">它在我的网站上能用么?</a></li>
+		<li><a href="#payouts">公平的报酬</a></li>
+	</ul>
+</div>
+
+<div class="section">
+	<h2 id="captcha">验证码</h2>
+
+	<p>
+		我们提供了非常简便的验证码服务，用户需要完成一定量的Hash计算（可调整）才可以继续操作。在防止各种垃圾信息以及阻止自动化脚本方面可以与传统验证码相媲美。然而它可以为您带来收益。
+	</p>
+
+	<p>
+		查看我们的<a href="/account/signup">注册页面</a>的实例。
+	</p>
+
+	<p>
+		验证码API与Google的reCaptcha相似，您只需要加载这个脚本，创建一个div并在表单提交时将获取到的令牌一并上传到服务端即可。
+		具体参考<a href="/documentation/captcha">文档</a>中的使用指南
+	</p>
+</div>
+
+<div class="section">
+	<h2 id="javascript-api">灵活的JavaScript API</h2>
+
+	<p>
+		验证码服务是基于JavaScript API构造的，如果您对其不满意，可以自行利用我们提供的API来实施自己期望的方案。
+	</p>
+
+	<p>
+		JavaScript API可以让您自由的与您的业务相结合，按您的意愿为用户提供奖励以便满足您的业务需求。
+	</p>
+
+	<p>
+		比如您可以在不显示广告的情况下为您的用户提供积分来供他们欣赏视频或者下载文件。
+	</p>
+	<p>加载ProjectPoi然后开始挖矿</p>
+<pre class="sh">
+&lt;script src="https://ppoi.org/lib/projectpoi.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+	var miner = new ProjectPoi.User('&lt;site-key&gt;', 'gebilaowang');
+	miner.start();
+&lt;/script&gt;
+</pre>
+
+</pre>
+
+	<p>获得该用户已经计算到的Hash数量</p>
+<pre class="sh">
+curl "https://api.ppoi.org/user/balance?name=gebilaowang&amp;secret=&lt;api-key&gt;"
+# {success: true, name: "gebilaowang" balance: 4096}
+</pre>
+
+	<p>
+		具体参考<a href="/documentation/captcha">文档</a>中的使用指南
+	</p>
+</div>
+
+<div class="section">
+	<h2 id="hash-rate">为什么选择门罗币?</h2>
+
+	<p>
+		门罗币与其他虚拟币不同，其独特的Cryptonight算法使得GPU在挖矿效率上相比CPU并没有特别明显的优势，让CPU挖矿变得可能。
+	</p>
+
+	<p>
+		尽管GPU确实仍然比CPU在运行Cryptonight算法时有更快的速度，然而这个速度一般是2倍左右，而不是其他算法的成千上万倍，这也使得该算法成为JavaScript挖矿的一个很好的目标。
+	</p>
+
+	<p>
+		当然，受限于JavaScript的运行效率，在JavaScript上运行的挖矿效率会不如正常的挖矿应用程序，不过效率并没有那么不堪，大约能做到桌面应用的65%左右。
+	</p>
+
+	<p>
+		我们也将努力提高这个效率。
+	</p>
+</div>
+
+<div class="section">
+	<h2 id="my-site">它在我的网站上能用么?</h2>
+
+	<p>
+		技术上来说可以，但是从经济角度来说可能不适合。如果您的网站访问量很小，则收益也将会很小。并且对于有明确的挖矿目标的应用（比如验证码），您将需要大量的访问才可以获得可观的收益。
+	</p>
+
+	<p>
+		想要获得可观的收益，您的用户需要在您的网站上停留足够久才可以。例如如果您平均有10-20个在线用户，那么您每月预计将可以获得0.3XMR(约192RMB)。
+	</p>
+
+	<p>
+		不过如果您的网站是在线流媒体，论坛，游戏或者其他会吸引用户长时间停留的网站，那么强烈建议您尝试。
+	</p>
+</div>
+
+<div class="section">
+	<h2 id="payouts">公平的报酬</h2>
+
+	<p>
+		我们会根据您的网站上总共解决的Hash数量以及门罗币网络的挖矿难度，每个块的回报率来决定报酬。每隔2小时将自动同步这些信息。您的收益计算方法如下
+	</p>
+
+	<p>
+		<code>
+	(&lt;挖到的Hash&gt;/&lt;门罗币挖矿困难度&gt;) * &lt;区块奖励&gt; * 0.9
+	</code>
+	</p>
+
+	<p>
+		目前门罗币网络的挖矿困难度为 of 30.807G (北京时间2017/9/30 12:8:40数据) 区块奖励为 6.349 XMR:
+	</p>
+
+	<p>
+		<code>
+			(&lt;挖到的Hash&gt;/30807632946) * 6.349 XMR * 0.9		</code>
+		=
+		<code>
+			0.000185 XMR per 1M hashes
+		</code>
+	</p>
+
+	<p>
+		也就是说，您将获得挖矿收益的90%，与矿池不同，这个收益是固定的，不论是否爆块您都将获得该笔收益。我们希望保留10%来补偿不爆块的损失，维持服务器的运行等。
+	</p>
+
+	<p>
+		我们尽可能的将此服务透明化。如果您的用户挖到了Hash，您将获得报酬，最低单笔支付为0.3XMR(约192RMB)
+	</p>
+
+	<p>
+		每隔两小时系统将自动进行结算，每天结算12次，一旦您的账户余额超过了最低支付额度，您将在下一次自动任务中获得报酬。
+	</p>
+</div>
+
+
+<p class="call-to-action">
+	<a class="button primary" href="/account/signup">
+		立即体验
+	</a>
+</p>
+
+<!-- include(footer) -->

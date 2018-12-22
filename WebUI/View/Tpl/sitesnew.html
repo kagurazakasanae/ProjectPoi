@@ -1,0 +1,34 @@
+<!-- include(header) -->
+<div class="title">
+	<h1>
+		<a href="/settings">设置</a> »
+		<a href="/settings/sites">站点 &amp; API 密钥</a> » 添加站点
+	</h1>
+</div>
+
+<p>
+	注意：每个用户最多可以创建5个站点，目前我们暂时不提供扩充服务。
+</p>
+
+	<form action="/settings/sites-new" method="post">
+		<input type="hidden" name="nonce" value="{$nonce}"/>
+		
+		<div class="row">
+			<div class="eight columns">
+				<label>名称</label>
+				<input
+					type="text" name="name" class="full-width"
+					value=""
+					placeholder="标识名称 (比如: 我的网站)"/>
+			</div>	
+			<div class="four columns">
+				<label>&nbsp;</label>
+				<input
+					type="submit" class="button primary full-width"
+					value="添加站点"/>
+			</div>
+		</div>
+	</form>
+
+
+<!-- include(footer) -->

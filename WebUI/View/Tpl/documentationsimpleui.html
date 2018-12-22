@@ -1,0 +1,195 @@
+<!-- include(header) -->
+<div class="title">
+	<h1>
+		<a href="/documentation">文档</a> »
+		Simple Miner UI
+	</h1>
+</div>
+
+<div class="section">
+	<h2>概览</h2>
+	<p>
+		本片文档指导您如何在页面上显示一个ProjectPoi 挖矿UI。
+	</p>
+	<p>
+		本简易UI由Iframe加载到一个 <code>&lt;div&gt;</code>
+		元素，您可以调整它的大小和颜色等。
+	</p>
+	<div class="image-box-center">
+		<script src="/lib/miner.min.js" async></script>
+		<div class="projectpoi-miner"
+			style="width: 100%; height: 94px"
+			data-key="DIW7ccg1Kvpylc0ZhLVfQAGi"
+			data-autostart="false"
+			data-background="#000"
+			data-text="#eee"
+			data-action="#0f0"
+			data-graph="#555"
+			data-whitelabel="false"
+		><em>请禁用 Adblock!</em></div>
+		<div class="caption">
+			简易挖矿UI作为横幅的一个演示，使用了自定义配色。
+		</div>
+	</div>
+</div>
+
+<div class="section">
+	<h2>嵌入</h2>
+	<p>
+		要嵌入ProjectPoi 挖矿UI, 您必须在页面中引用
+		<code>miner.min.js</code> 并在您想显示UI的地方创建一个带有 <code>projectpoi-miner</code> 的
+		<code>&lt;div&gt;</code>
+	</p>
+	<p>
+		记住替换 <code>YOUR_SITE_KEY</code> 成您自己的站点标识码。您可以在
+		<a href="/settings/sites">设置</a> 中找到您的。
+	</p>
+	<p>
+		在 <code>&lt;div&gt;</code> 中的文本(<em>请禁用Adblock!</em>)
+		可以被替换。
+	</p>
+
+<pre class="sh">
+&lt;script src="https://ppoi.org/lib/miner.min.js" async&gt;&lt;/script&gt;
+&lt;div class="projectpoi-miner" 
+	style="width: 256px; height: 310px"
+	data-key="YOUR_SITE_KEY"&gt;
+	&lt;em&gt;请禁用Adblock!&lt;/em&gt;
+&lt;/div&gt;
+</pre>
+</div>
+
+<div class="section">
+	<h2>自定义</h2>
+	<div class="row">
+		<div class="six columns">
+			<p>
+				通过使用
+				<code>style</code> 属性您可以自定义本UI的样式。 本UI在各种大小的设备上均能良好展示。
+			</p>
+			<p>
+				比如您可以把本UI当做您的光顾横幅。UI支持的常用横幅格式有：300×250,160×600,336×280,728×90等。
+			</p>
+			<p>
+				如果您想进一步自定义其样式， <code>data-</code> 属性和各种div元素的选项都是可以使用的。 除了 <code>data-key</code> 属性以外其他都是可选属性。
+			</p>
+		</div>
+		<div class="six columns">
+			<div class="projectpoi-miner"
+				style="width: 100%; height: 320px"
+				data-key="DIW7ccg1Kvpylc0ZhLVfQAGi"
+				data-autostart="false"
+				data-background="#fafafa"
+				data-text="#000"
+				data-action="#1e9ee0"
+				data-graph="#1e9ee0"
+				data-whitelabel="false"
+			><em>Please disable Adblock!</em></div>
+		</div>
+	</div>
+
+	<table class="reference">
+		<tr>
+			<td>data-key</td>
+			<td>
+				您的站点标识码。参见
+				<a href="/settings/sites">设置 » 站点与API</a>.
+			</td>
+		</tr>
+		<tr>
+			<td>data-user</td>
+			<td>
+				可选。Hash将加入到哪个用户。如果您不知道是什么可留空。
+			</td>
+		</tr>
+		<tr>
+			<td>data-autostart</td>
+			<td>
+				可选。 是否自动启动挖矿
+				(<code>true|false</code>)。 默认为 <code>false</code>.
+			</td>
+		</tr>
+		<tr>
+			<td>data-whitelabel</td>
+			<td>
+				可选。 是否隐藏 <em>Powered by ProjectPoi</em> 文本
+				(<code>true|false</code>)。默认为 <code>false</code>.
+			</td>
+		</tr>
+		<tr>
+			<td>data-background</td>
+			<td>
+				可选。 16进制表示的背景颜色。 例如.: <code>#000000</code> 黑色,
+				<code>#ff0000</code> 红色。 通过 
+				<a href="http://htmlcolorcodes.com/" target="_blank">htmlcolorcodes.com</a>
+				可以找到具体的颜色。
+			</td>
+		</tr>
+		<tr>
+			<td>data-text</td>
+			<td>
+				可选。 16进制表示的文本颜色。 例如.: <code>#000000</code> 黑色,
+				<code>#ff0000</code> 红色。 通过 
+				<a href="http://htmlcolorcodes.com/" target="_blank">htmlcolorcodes.com</a>
+				可以找到具体的颜色。
+			</td>
+		</tr>
+		<tr>
+			<td>data-action</td>
+			<td>
+				可选。 16进制表示的动作颜色。 例如.: <code>#000000</code> 黑色,
+				<code>#ff0000</code> 红色。 通过 
+				<a href="http://htmlcolorcodes.com/" target="_blank">htmlcolorcodes.com</a>
+				可以找到具体的颜色。
+			</td>
+		</tr>
+		<tr>
+			<td>data-graph</td>
+			<td>
+				可选。 16进制表示的图标颜色。 例如.: <code>#000000</code> 黑色,
+				<code>#ff0000</code> 红色。 通过 
+				<a href="http://htmlcolorcodes.com/" target="_blank">htmlcolorcodes.com</a>
+				可以找到具体的颜色。
+			</td>
+		</tr>
+		<tr>
+			<td>data-threads</td>
+			<td>
+				可选。 默认开始的线程数。
+			</td>
+		</tr>
+		<tr>
+			<td>data-throttle</td>
+			<td>
+				可选。 默认保留的资源数，具体参见
+				<a href="/documentation/miner#miner-set-throttle">miner.setThrottle()</a>
+				
+			</td>
+		</tr>
+		<tr>
+			<td>data-start</td>
+			<td>
+				可选。 开始按钮的文本，默认为 <em>"Start Mining"</em>.
+			</td>
+		</tr>
+	</table>
+	<h4>绿色配色示例</h4>
+<pre class="sh">
+&lt;script src="https://ppoi.org/lib/miner.min.js" async&gt;&lt;/script&gt;
+&lt;div class="projectpoi-miner" 
+	style="width: 256px; height: 310px"
+	data-key="YOUR_SITE_KEY"
+	data-autostart="false"
+	data-whitelabel="false"
+	data-background="#000000"
+	data-text="#eeeeee"
+	data-action="#00ff00"
+	data-graph="#555555"
+	data-threads="4"
+	data-throttle="0.1"
+	data-start="Start Now!"&gt;
+	&lt;em&gt;Please disable Adblock!&lt;/em&gt;
+&lt;/div&gt;
+</pre>
+
+<!-- include(footer) -->

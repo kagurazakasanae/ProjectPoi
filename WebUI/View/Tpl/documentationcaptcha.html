@@ -1,0 +1,175 @@
+<!-- include(header) -->
+<div class="title">
+	<h1>
+		<a href="/documentation">文档</a> »
+		验证码
+	</h1>
+</div>
+
+<div class="section">
+	<h2>概览</h2>
+	<p>
+		
+		本文档将教您在您的网站上显示并自定义ProjectPoi组件。从站长的角度来看，ProjectPoi和传统的验证码类似（如谷歌的reCaptcha）。
+		
+	</p>
+	<p>
+		ProjectPoi组件运行在用户的浏览器上，会生成一个Token并和其他表单信息一起提交，你可以在服务器后端通过<a href="/documentation/http-api">HTTP API</a>验证这个Token。
+	</p>
+	<p>
+		与其他验证码不同，用户不需要证明他们是人类，而是通过进行大量的计算来验证，因为需要占用计算资源，所以可以有效地防止垃圾信息骚扰
+	</p>
+</div>
+
+<div class="section">
+	<h2>集成</h2>
+	<p>
+		如果想要把ProjectPoi验证码集成到你的网站上，你要首先加载 <code>captcha.min.js</code> 到你的页面上，然后放置<code>&lt;div class="projectpoi-captcha"&gt; &lt;/div&gt;</code>来显示验证码
+	</p>
+	<p>
+		如果成功加载JS，div元素内容将会被替换成验证码
+	</p>
+
+<pre class="sh">
+&lt;form action="?" method="post"&gt;
+	&lt;!-- other form fields --&gt;
+
+	&lt;script src="https://ppoi.org/lib/captcha.min.js" async&gt;&lt;/script&gt;
+	&lt;div class="projectpoi-captcha" data-hashes="1024" data-key="SITE_KEY"&gt;
+		&lt;em&gt;Loading Captcha...&lt;br&gt;
+		If it doesn't load, please disable Adblock!&lt;/em&gt;
+	&lt;/div&gt;
+
+	&lt;input type="submit" value="Submit"/&gt;
+&lt;/form&gt;
+</pre>
+	<p>
+		当验证完毕之后，会自动生成一个token，并以<code>projectpoi-captcha-token</code>参数和其他内容一起被发送到服务器
+	</p>
+	<p>
+		在服务器端，你可以通过使用HTTP API 
+		<a href="/documentation/http-api#token-verify">/token/verify</a> 来验证token是否正确
+	</p>
+<pre class="sh">
+curl -X POST \
+	-d "token=&lt;projectpoi-captcha-token&gt;" \
+	-d "hashes=1024" \
+	-d "secret=&lt;secret-key&gt;" \
+	"https://api.ppoi.org/token/verify"
+
+# {"success": true, "created": 1504205981, "hashes": 1024}
+</pre>
+
+	<p>
+		Hash数量会分别在服务端和客户端被验证一次，以防止用户作弊或绕过
+	</p>
+</div>
+
+<div class="section">
+	<h2>参数</h2>
+	<p>
+		你可以通过修改或添加<code>data-</code>属性来指定以下参数，标了*号的是可选参数
+	</p>
+
+	<table class="reference">
+		<tr>
+			<td>data-key</td>
+			<td>
+				你的Site Key，参考
+				<a href="/settings/sites">设置 - 站点</a>.
+			</td>
+		</tr>
+		<tr>
+			<td>data-hashes</td>
+			<td>
+				需要计算的Hash数量，因为我们的矿池难度为128，所以数量必须是128的倍数
+			</td>
+		</tr>
+		<tr>
+			<td>*data-autostart</td>
+			<td>
+				（可选）是否自动开始计算，可选值为
+				<code>true|false</code> 默认为 <code>false</code>（不开启）
+			</td>
+		</tr>
+		<tr>
+			<td>*data-whitelabel</td>
+			<td>
+				（可选）是否隐藏ProjectPoi Logo和“这是什么”链接
+			</td>
+		</tr>
+		<tr>
+			<td>*data-callback</td>
+			<td>
+				（可选）当验证完成时的JS回调函数名
+			</td>
+		</tr>
+		<tr>
+			<td>*data-disable-elements</td>
+			<td>
+				（可选）验证完毕前需要禁用的元素，比如“提交”按钮。支持CSS选择器。
+			</td>
+		</tr>
+	</table>
+	<h4>完整例子</h4>
+<pre class="sh">
+&lt;form action="?" method="post"&gt;
+	&lt;!-- other form fields --&gt;
+
+	&lt;script src="https://ppoi.org/lib/captcha.min.js" async&gt;&lt;/script&gt;
+	&lt;script&gt;
+		function myCaptchaCallback(token) {
+			alert('Hash已达设定值. Token 为: ' + token);
+		}
+	&lt;/script&gt;
+	&lt;div class="projectpoi-captcha" 
+		data-hashes="1024" 
+		data-key="SITE_KEY"
+		data-autostart="false"
+		data-whitelabel="false"
+		data-disable-elements="input[type=submit]"
+		data-callback="myCaptchaCallback"
+	&gt;
+		&lt;em&gt;加载验证码...&lt;br&gt;
+		If it doesn't load, please disable Adblock!&lt;/em&gt;
+	&lt;/div&gt;
+
+	&lt;!-- submit button will be automatically disabled and later enabled
+		again when the captcha is solved --&gt;
+	&lt;input type="submit" value="Submit"/&gt;
+&lt;/form&gt;
+</pre>
+
+</div>
+
+<div class="section">
+	<h4>PHP后端验证例子</h4>
+<pre class="sh">
+$post_data = [
+	'secret' =&gt; "SECRET-KEY", // &lt- Your secret key
+	'token' =&gt; $_POST['projectpoi-captcha-token'],
+	'hashes' =&gt; 1024
+];
+
+$post_context = stream_context_create([
+	'http' =&gt; [
+		'header'  =&gt; "Content-type: application/x-www-form-urlencoded\r\n",
+		'method'  =&gt; 'POST',
+		'content' =&gt; http_build_query($post_data)
+	]
+]);
+
+$url = 'https://api.ppoi.org/token/verify';
+$response = json_decode(file_get_contents($url, false, $post_context));
+
+if ($response &amp;&amp; $response-&gt;success) {
+	// All good. Token verified!
+}
+</pre>
+
+<p>
+	更多信息（如错误代码等）请参考
+	<a href="/documentation/http-api">HTTP API文档</a>.
+</p>
+
+<!-- include(footer) -->

@@ -1,0 +1,51 @@
+<!-- include(header) -->
+<div class="header">
+	<h1>
+		<a href="/settings">设置</a> »
+		账户
+	</h1>
+</div>
+
+<!-- if($notice!=''): -->
+<p class="notice warn">{$notice}</p>
+<!-- endif -->
+
+<form action="/settings/account" method="post" class="loginform">
+	<input type="hidden" name="nonce" value="{$nonce}"/>
+
+	<div class="row form-row">
+		<label>邮箱</label>
+		<input 
+			type="email" required
+			name="email" class="full-width" 
+			value="{$currentemail}"/>
+					
+		<p class="hint">
+			如果您更改了您的邮箱地址，您将需要重新验证新的地址。
+		</p>
+	</div>
+
+	<div class="row form-row">
+		<label>新密码</label>
+		<input 
+			type="password" pattern=".{8,}" class="wide"
+			name="newPassword"/>
+				<p class="hint">
+			不更改密码请留空，最少8位字符。
+		</p>
+	</div>
+	<div class="row form-row">
+		<label>当前密码</label>
+		<input 
+			type="password" required class="wide"
+			name="password"/>
+				<p class="hint">
+			请输入您 <strong>当前的</strong> 密码来保存更改。
+		</p>
+	</div>
+	<div class="row form-row">
+		<label>&nbsp;</label>
+		<input type="submit" class="button primary" value="保存更改"/>
+	</div>
+</form>
+<!-- include(footer) -->
